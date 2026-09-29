@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ec">
+  <title>Weather Desk</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='weather.css') }}">
+  <script src="{{ url_for('static', filename='weather.js') }}" defer></script>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="masthead">
+      <a class="wordmark" href="/" aria-label="Weather Desk home"><span class="wordmark-mark" aria-hidden="true">W</span>Weather Desk</a>
+      <span class="masthead-note"><span class="live-dot" aria-hidden="true"></span>Live conditions</span>
+    </header>
+
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">A clearer read on outside</p>
+      <h1 id="page-title">Weather, <em>where you are.</em></h1>
+      <p class="intro-copy">Find the current conditions for any city.</p>
+    </section>
+
+    <section class="weather-tool" aria-label="Current weather lookup">
+      <form class="search-form" id="search-form">
+        <label class="city-field" for="city-input">
+          <span>City or place</span>
+          <input id="city-input" name="city" type="text" placeholder="Try Reykjavík, Iceland" autocomplete="off" maxlength="100" required>
+        </label>
+        <fieldset class="unit-switch" aria-label="Temperature unit">
+          <button class="unit-button is-selected" type="button" data-unit="celsius" aria-pressed="true">°C</button>
+          <button class="unit-button" type="button" data-unit="fahrenheit" aria-pressed="false">°F</button>
+        </fieldset>
+        <button class="search-button" type="submit"><span aria-hidden="true">⌕</span><span>Find weather</span></button>
+      </form>
+
+      <p class="status-message" id="status-message" role="status" aria-live="polite">Enter a city to see what the sky is doing.</p>
+
+      <section class="weather-result" id="weather-result" aria-live="polite" aria-atomic="true" hidden>
+        <div class="weather-heading">
+          <div class="place-block">
+            <p class="place-label">Current conditions</p>
+            <h2 id="place-name"></h2>
+            <p class="observed-time" id="observed-time"></p>
+          </div>
+          <div class="sky-icon" id="sky-icon" aria-hidden="true"></div>
+        </div>
+        <div class="primary-weather">
+          <p class="temperature" id="temperature"></p>
+          <div class="condition-block">
+            <p class="condition" id="condition"></p>
+            <p class="feels-like" id="feels-like"></p>
+          </div>
+        </div>
+        <div class="weather-details" aria-label="Additional weather details">
+          <div class="detail-item"><span class="detail-label">Humidity</span><strong id="humidity"></strong></div>
+          <div class="detail-item"><span class="detail-label">Wind</span><strong id="wind"></strong></div>
+          <div class="detail-item"><span class="detail-label">Local time zone</span><strong id="timezone"></strong></div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="page-footer"><span>Forecast data by Open-Meteo</span><span>Conditions can change quickly</span></footer>
+  </main>
+</body>
+</html>

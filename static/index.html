@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f4ed">
+  <title>Little Number Studio</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1d302b;
+      --muted: #718078;
+      --paper: #f3f4ed;
+      --panel: #fffefa;
+      --line: #e5e9df;
+      --green: #245e4b;
+      --green-dark: #194637;
+      --orange: #ed7851;
+      --shadow: 0 24px 70px rgba(34, 57, 47, .12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 32px 18px;
+      color: var(--ink);
+      background-color: var(--paper);
+      background-image: radial-gradient(#d9dfd4 0.7px, transparent 0.7px);
+      background-size: 17px 17px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    .layout {
+      width: min(100%, 920px);
+      display: grid;
+      grid-template-columns: minmax(230px, 1fr) minmax(320px, 420px);
+      align-items: center;
+      gap: clamp(36px, 8vw, 96px);
+    }
+
+    .intro { padding: 12px 0; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 23px;
+      height: 2px;
+      background: var(--orange);
+      content: "";
+    }
+
+    h1 {
+      max-width: 360px;
+      margin: 20px 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 64px;
+      font-weight: 400;
+      line-height: .99;
+    }
+
+    h1 span { color: var(--green); font-style: italic; }
+
+    .intro p {
+      max-width: 310px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .notation {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 38px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .notation-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 1px solid #dce2d8;
+      border-radius: 50%;
+      color: var(--orange);
+      font-family: Georgia, serif;
+      font-size: 19px;
+    }
+
+    .calculator {
+      overflow: hidden;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, .8);
+      border-radius: 9px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 2px 20px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .online { display: flex; align-items: center; gap: 7px; }
+    .online::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #67a47a;
+      content: "";
+    }
+
+    .display {
+      min-height: 122px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+      overflow: hidden;
+      padding: 17px 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f7f8f2;
+    }
+
+    .expression {
+      width: 100%;
+      min-height: 18px;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .value {
+      width: 100%;
+      overflow: hidden;
+      margin-top: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 50px;
+      line-height: 1.1;
+      text-align: right;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .message {
+      min-height: 19px;
+      margin: 10px 2px 13px;
+      color: #b54d37;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    button {
+      min-width: 0;
+      height: 58px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      background: #f0f2ec;
+      color: var(--ink);
+      cursor: pointer;
+      font: 600 20px "Trebuchet MS", "Segoe UI", sans-serif;
+      transition: background-color .14s ease, transform .14s ease;
+    }
+
+    button:hover { background: #e7ebe2; }
+    button:active { transform: translateY(1px); }
+    button:focus-visible { outline: 3px solid #ed7851; outline-offset: 2px; }
+    button.utility { background: #f8e9e1; color: #a54f38; font-size: 15px; }
+    button.operator { background: #e5eee7; color: var(--green-dark); font-size: 23px; }
+    button.equals { background: var(--green); color: white; font-size: 25px; }
+    button.equals:hover { background: var(--green-dark); }
+    button.zero { grid-column: span 2; }
+
+    @media (max-width: 650px) {
+      body { padding: 22px 16px; }
+      .layout { width: min(100%, 420px); grid-template-columns: 1fr; gap: 23px; }
+      .intro { padding: 0 4px; }
+      h1 { max-width: 300px; margin: 12px 0 8px; font-size: 42px; }
+      .intro p { max-width: 360px; font-size: 14px; }
+      .notation { display: none; }
+      .calculator { padding: 20px; }
+      button { height: 55px; }
+      .value { font-size: 40px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="layout">
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow">A little tool for clear thinking</div>
+      <h1 id="page-title">Little Number <span>Studio</span></h1>
+      <p>Quick arithmetic, thoughtfully simple. Tap a key or use your keyboard.</p>
+      <div class="notation"><span class="notation-mark" aria-hidden="true">+</span><span>Small sums, big ideas.</span></div>
+    </section>
+
+    <section class="calculator" aria-label="Calculator">
+      <div class="topline"><span>Calculator</span><span class="online">Ready</span></div>
+      <div class="display" aria-live="polite" aria-atomic="true">
+        <div class="expression" id="expression"></div>
+        <div class="value" id="value">0</div>
+      </div>
+      <div class="message" id="message" role="status"></div>
+      <div class="keys" id="keys">
+        <button class="utility" data-action="clear" aria-label="Clear">AC</button>
+        <button class="utility" data-action="backspace" aria-label="Backspace">⌫</button>
+        <button class="operator" data-operator="%" aria-label="Remainder">%</button>
+        <button class="operator" data-operator="/" aria-label="Divide">÷</button>
+        <button data-digit="7">7</button>
+        <button data-digit="8">8</button>
+        <button data-digit="9">9</button>
+        <button class="operator" data-operator="*" aria-label="Multiply">×</button>
+        <button data-digit="4">4</button>
+        <button data-digit="5">5</button>
+        <button data-digit="6">6</button>
+        <button class="operator" data-operator="-" aria-label="Subtract">−</button>
+        <button data-digit="1">1</button>
+        <button data-digit="2">2</button>
+        <button data-digit="3">3</button>
+        <button class="operator" data-operator="+" aria-label="Add">+</button>
+        <button class="zero" data-digit="0">0</button>
+        <button data-action="decimal" aria-label="Decimal point">.</button>
+        <button class="equals" data-action="equals" aria-label="Equals">=</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const valueDisplay = document.querySelector("#value");
+    const expressionDisplay = document.querySelector("#expression");
+    const messageDisplay = document.querySelector("#message");
+    let current = "0";
+    let stored = null;
+    let operator = null;
+    let waitingForOperand = false;
+    let showingResult = false;
+    let pending = false;
+
+    function render() {
+      valueDisplay.textContent = current;
+      expressionDisplay.textContent = stored === null ? "" : `${stored} ${operator}`;
+    }
+
+    function inputDigit(digit) {
+      messageDisplay.textContent = "";
+      if (waitingForOperand || showingResult) {
+        current = digit;
+        waitingForOperand = false;
+        showingResult = false;
+      } else if (current === "0") {
+        current = digit;
+      } else if (current.replace("-", "").replace(".", "").length < 14) {
+        current += digit;
+      }
+      render();
+    }
+
+    function inputDecimal() {
+      if (waitingForOperand || showingResult) {
+        current = "0.";
+        waitingForOperand = false;
+        showingResult = false;
+      } else if (!current.includes(".")) {
+        current += ".";
+      }
+      messageDisplay.textContent = "";
+      render();
+    }
+
+    async function chooseOperator(nextOperator) {
+      if (pending) return;
+      if (operator && stored !== null && !waitingForOperand) await calculate();
+      stored = Number(current);
+      operator = nextOperator;
+      waitingForOperand = true;
+      showingResult = false;
+      render();
+    }
+
+    async function calculate() {
+      if (stored === null || operator === null || waitingForOperand || pending) return;
+      const left = stored;
+      const right = Number(current);
+      const activeOperator = operator;
+      pending = true;
+      messageDisplay.textContent = "";
+      try {
+        const response = await fetch("/api/calc", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ left, operator: activeOperator, right })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Calculation failed.");
+        current = String(Number(data.result.toPrecision(12)));
+        expressionDisplay.textContent = `${left} ${activeOperator} ${right} =`;
+        stored = null;
+        operator = null;
+        waitingForOperand = true;
+        showingResult = true;
+        valueDisplay.textContent = current;
+      } catch (error) {
+        messageDisplay.textContent = error.message;
+      } finally {
+        pending = false;
+      }
+    }
+
+    function clear() {
+      current = "0";
+      stored = null;
+      operator = null;
+      waitingForOperand = false;
+      showingResult = false;
+      messageDisplay.textContent = "";
+      render();
+    }
+
+    function backspace() {
+      if (waitingForOperand || showingResult) return;
+      current = current.length > 1 ? current.slice(0, -1) : "0";
+      if (current === "-" || current === "") current = "0";
+      render();
+    }
+
+    document.querySelector("#keys").addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button || pending) return;
+      if (button.dataset.digit !== undefined) inputDigit(button.dataset.digit);
+      else if (button.dataset.operator) chooseOperator(button.dataset.operator);
+      else if (button.dataset.action === "decimal") inputDecimal();
+      else if (button.dataset.action === "equals") calculate();
+      else if (button.dataset.action === "clear") clear();
+      else if (button.dataset.action === "backspace") backspace();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (pending) return;
+      if (/^[0-9]$/.test(event.key)) inputDigit(event.key);
+      else if (event.key === ".") inputDecimal();
+      else if (["+", "-", "*", "/", "%"].includes(event.key)) chooseOperator(event.key);
+      else if (event.key === "Enter" || event.key === "=") { event.preventDefault(); calculate(); }
+      else if (event.key === "Backspace") backspace();
+      else if (event.key === "Escape") clear();
+    });
+  </script>
+</body>
+</html>
